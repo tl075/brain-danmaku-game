@@ -22,6 +22,7 @@ class SoundManager {
         this.currentAudio = null;
         this.nowPlayingSpan = document.getElementById('song-name');
         this.nowPlayingDiv = document.getElementById('now-playing');
+        this.muted = false;
     }
 
     // Removed loadBgmFolder -> Now automatic
@@ -42,6 +43,7 @@ class SoundManager {
 
         this.currentAudio = new Audio(path);
         this.currentAudio.volume = 0.3;
+        this.currentAudio.muted = this.muted;
 
         this.currentAudio.addEventListener('ended', () => {
             this.playRandomBgm();
@@ -55,6 +57,13 @@ class SoundManager {
         // UI Update
         this.nowPlayingDiv.classList.remove('hidden');
         this.nowPlayingSpan.textContent = randomFile;
+    }
+
+    toggleMute() {
+        this.muted = !this.muted;
+        if (this.currentAudio) {
+            this.currentAudio.muted = this.muted;
+        }
     }
 
     playSE(type) {

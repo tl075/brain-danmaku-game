@@ -109,10 +109,35 @@ class BrainTaskManager {
     }
 
     spawnTarget(label, value, color) {
+        let x, y, r = 30;
+        let valid = false;
+        let attempts = 0;
+
+        // v1.1 Overlap Prevention
+        while (!valid && attempts < 20) {
+            x = 50 + Math.random() * (this.game.width - 100);
+            y = 50 + Math.random() * (this.game.height - 100);
+
+            let overlap = false;
+            // 1. Check existing targets
+            for (const t of this.targets) {
+                const dx = x - t.x;
+                const dy = y - t.y;
+                if (dx * dx + dy * dy < (r + t.r + 20) ** 2) overlap = true;
+            }
+
+            // 2. Check Typing Display Area (Bottom Center)
+            // Area approx: x=200~600, y=400~600
+            if (x > 200 && x < 600 && y > 400) overlap = true;
+
+            if (!overlap) valid = true;
+            attempts++;
+        }
+
         this.targets.push({
-            x: 100 + Math.random() * (this.game.width - 200),
-            y: 100 + Math.random() * (this.game.height - 200),
-            r: 30,
+            x: x,
+            y: y,
+            r: r,
             label: label,
             value: value,
             color: color || '#fff'
@@ -202,7 +227,8 @@ class BrainTaskManager {
 
             // Effect: Damage Boss & Clear Bullets
             this.game.damageBoss(5);
-            this.game.bullets.clearArea(this.game.player.x, this.game.player.y, 200); // 200px radius bomb
+            // v1.1 Reduced Radius (100px)
+            this.game.bullets.clearArea(this.game.player.x, this.game.player.y, 100);
 
             // Reset / Next
             this.state = 'RESOLVING'; // Prevent multi-trigger

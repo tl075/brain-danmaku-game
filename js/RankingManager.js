@@ -3,7 +3,7 @@ class RankingManager {
         // [USER ACTION REQUIRED] Paste your Web App URL here!
         // ★★★ここにあなたのGASデプロイURLを貼り付けてください！★★★
         // 例: https://script.google.com/macros/s/xxxxxxxxxxxxxxxxx/exec
-        this.gasUrl = "https://script.google.com/macros/s/AKfycbweyZjVa6WcnXEdwbyb6u_WrnX8cvgCmSCYxSEcMh0JITb3grp5FSiJFRi8ap9411N1cA/exec";
+        this.gasUrl = "https://script.google.com/macros/s/AKfycbyf3PcEwGMG5WPNrHQVXq_reltNrqrUOZwNIMeFOoo8COVU0TVfSBSfB8ntCj5Nj3EA7A/exec";
         this.playerName = this.generateRandomName();
 
         // Check if URL is still the placeholder
@@ -71,10 +71,11 @@ class RankingManager {
             ];
         }
     }
-    async submitScore(timeStr, lives) {
+    async submitScore(timeStr, lives, typeCount, score) {
         try {
-            console.log("Submitting score...", this.playerName, timeStr, lives);
-            const url = `${this.gasUrl}?action=post&name=${encodeURIComponent(this.playerName)}&time=${encodeURIComponent(timeStr)}&lives=${lives}`;
+            console.log("Submitting score...", this.playerName, timeStr, lives, typeCount, score);
+            // v1.1 Update: Send typeCount and score
+            const url = `${this.gasUrl}?action=post&name=${encodeURIComponent(this.playerName)}&time=${encodeURIComponent(timeStr)}&lives=${lives}&typeCount=${typeCount}&score=${score}`;
             await fetch(url, {
                 method: 'GET',
                 mode: 'no-cors'

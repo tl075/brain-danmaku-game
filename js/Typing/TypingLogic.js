@@ -10,11 +10,12 @@ class TypingLogic {
             { text: "wind", effect: "WIND" },
             { text: "bomb", effect: "BOMB" },
             { text: "hide", effect: "HIDE" },
-            { text: "show", effect: "SHOW" },
+            // { text: "show", effect: "SHOW" }, // REMOVED v1.1
             { text: "slow", effect: "SLOW" },
             { text: "fast", effect: "FAST" },
             { text: "heal", effect: "HEAL" },
-            { text: "block", effect: "BLOCK" }
+            { text: "block", effect: "BLOCK" },
+            { text: "power", effect: "POWER" } // ADDED v1.1
         ];
 
         this.currentQuestion = null;
@@ -93,6 +94,7 @@ class TypingLogic {
 
     completeQuestion() {
         this.game.sound.playSE('correct');
+        this.game.typingSuccessCount++; // v1.1 Track success
 
         // Trigger Effect
         this.game.applyEffect(this.currentQuestion.effect);

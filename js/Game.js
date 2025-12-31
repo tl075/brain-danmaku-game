@@ -20,8 +20,10 @@ class Game {
 
         this.frameTimer = 0;
         this.bulletSpeedModifier = 1.0;
+        this.bulletSpeedModifier = 1.0;
         this.freezeTimer = 0;
         this.spawnEnabled = true;
+        this.typingSuccessCount = 0; // v1.1 Track typing success for score
 
         // UI Elements
         this.ui = {
@@ -62,8 +64,6 @@ class Game {
 
         data.forEach((row, i) => {
             let displayTime = row.time;
-            // Clean up Google Sheet Date string if present (e.g., "Sat Dec 30 1899 05:07:00...")
-            // We want to extract just the time part "05:07"
             if (displayTime.length > 10 && displayTime.includes(":")) {
                 const match = displayTime.match(/(\d{2}:\d{2})/);
                 if (match) {
@@ -71,8 +71,11 @@ class Game {
                 }
             }
 
+            // v1.1: Display Score
+            const scoreDisplay = row.score || "-";
+
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${i + 1}</td><td>${row.name}</td><td>${displayTime}</td><td>${row.lives}</td>`;
+            tr.innerHTML = `<td>${i + 1}</td><td>${row.name}</td><td>${scoreDisplay}</td><td>${displayTime}</td><td>${row.lives}</td>`;
             tbody.appendChild(tr);
         });
 
@@ -85,6 +88,16 @@ class Game {
         }
         if (this.ui.retryBtn) {
             this.ui.retryBtn.addEventListener('click', () => this.restart());
+        }
+
+        // Mute Button
+        const muteBtn = document.getElementById('mute-btn');
+        if (muteBtn) {
+            muteBtn.addEventListener('click', () => {
+                this.sound.toggleMute();
+                muteBtn.style.opacity = this.sound.muted ? "0.3" : "1";
+                muteBtn.innerText = this.sound.muted ? "🔇" : "🔊";
+            });
         }
     }
 
@@ -190,10 +203,12 @@ class Game {
                 const hideBox = document.getElementById('hide-box');
                 if (hideBox) hideBox.classList.remove('hidden');
                 break;
-            case 'SHOW':
-                const showBox = document.getElementById('hide-box');
-                if (showBox) showBox.classList.add('hidden');
+                if (hideBox) hideBox.classList.remove('hidden');
                 break;
+            // case 'SHOW': REMOVED v1.1
+            //    const showBox = document.getElementById('hide-box');
+            //    if (showBox) showBox.classList.add('hidden');
+            //    break;
             case 'SLOW':
                 this.bullets.accelAll(0.5);
                 break;
@@ -205,6 +220,12 @@ class Game {
                 break;
             case 'BLOCK':
                 this.bullets.spawnBlock(this.player.x, this.player.y - 60);
+                break;
+            case 'POWER':
+                // Increase damage multiplier or similar?
+                // For now, let's just do immediate damage as a burst
+                this.damageBoss(15); // Power hit
+                this.bullets.transformToRedAndClear(this.player.x, this.player.y, 200);
                 break;
         }
     }
@@ -226,14 +247,20 @@ class Game {
             const s = (seconds % 60).toString().padStart(2, '0');
             const timeStr = `${m}:${s}`;
 
-            document.getElementById('final-score').innerText = `Time: ${timeStr} | Lives: ${this.player.lives}`;
+            // v1.1 Calc Score
+            const score = seconds - (this.player.lives * 30) - (this.typingSuccessCount * 10);
 
-            this.ranking.submitScore(timeStr, this.player.lives);
+            document.getElementById('final-score').innerText = `Time: ${timeStr} | Lives: ${this.player.lives} | Score: ${score}`;
+
+            this.ranking.submitScore(timeStr, this.player.lives, this.typingSuccessCount, score);
         }
     }
 
     updateBossUi() {
         this.ui.bossHp.textContent = Math.floor(this.bossHpCurrent) + "%";
+        // v1.1 Boss HP Bar
+        const bar = document.getElementById('boss-hp-bar');
+        if (bar) bar.style.width = this.bossHpCurrent + "%";
     }
 
     checkCollisions() {

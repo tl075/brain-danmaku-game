@@ -68,3 +68,20 @@
 - [ ] HUD (HP, Time, Current Task)
 - [ ] Game Over / Retry Screen
 - [ ] Victory Screen
+
+## User Requested Enhancements (v1.1)
+- [x] **Audio**
+    - [x] Add BGM Mute Button (with Icon/Text toggle)
+- [x] **UI Improvements**
+    - [x] Fix RPS Icon / Typing Box overlap
+    - [x] Fix RPS Icon self-overlap
+    - [x] Remove `show` command capability
+    - [x] Add Boss HP Bar (Top Red Bar)
+- [x] **Gameplay Features**
+    - [x] Add `power` command (1.5x damage)
+    - [x] Reduce bullet clear radius for RPS clear
+    - [x] Track Typing Success Count
+- [x] **Ranking Logic Update**
+    - [x] Score Formula: Time(sec) - (Lives*30) - (TypeSuccess*10)
+    - [x] Ranking Display: Score order (low score is better)
+    - [x] Update GAS sorting logic
