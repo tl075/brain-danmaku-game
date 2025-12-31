@@ -41,10 +41,12 @@ class Game {
 
         // Initialize Ranking UI
         const nameInput = document.getElementById('player-name-input');
-        nameInput.value = this.ranking.playerName;
-        nameInput.addEventListener('change', (e) => {
-            this.ranking.playerName = e.target.value || this.ranking.generateRandomName();
-        });
+        if (nameInput) {
+            nameInput.value = this.ranking.playerName;
+            nameInput.addEventListener('change', (e) => {
+                this.ranking.playerName = e.target.value || this.ranking.generateRandomName();
+            });
+        }
 
         this.loadRanking();
 
