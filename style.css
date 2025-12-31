@@ -110,6 +110,15 @@ button {
     margin-top: 20px;
 }
 
+#version-display {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-heading);
+}
+
 #player-setup {
     margin: 20px 0;
 }
