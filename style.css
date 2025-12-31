@@ -1,0 +1,213 @@
+:root {
+    --bg-color: #111;
+    --text-color: #fff;
+    --accent-color: #0ff;
+    --danger-color: #f00;
+    --font-heading: 'Share Tech Mono', monospace;
+    --font-body: 'Zen Kaku Gothic New', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: var(--text-color);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    background: #1a1a1a;
+}
+
+canvas {
+    display: block;
+    background-color: #000;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#error-log {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: red;
+    z-index: 9999;
+    padding: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    pointer-events: none;
+    overflow-y: auto;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* Enable pointer events for buttons/inputs */
+#start-screen,
+#game-over-screen,
+#victory-screen,
+.setup-section {
+    pointer-events: auto;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Screens */
+#start-screen,
+#game-over-screen,
+#victory-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+    margin-bottom: 20px;
+}
+
+button {
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+button:hover {
+    background: var(--accent-color);
+    color: #000;
+    box-shadow: 0 0 20px var(--accent-color);
+}
+
+.setup-section {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #444;
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+}
+
+#now-playing {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Typing UI */
+#typing-input {
+    position: absolute;
+    opacity: 0;
+    top: -1000px;
+}
+
+#typing-display {
+    position: absolute;
+    bottom: 20%;
+    /* Adjusted to leave space for player */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 1px solid var(--accent-color);
+}
+
+#typing-question {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+#typing-romaji {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.typed {
+    color: #f0f;
+    /* Matrix green or Cyberpunk pink? Let's go Pink/Cyan */
+    text-shadow: 0 0 5px #f0f;
+}
+
+.untyped {
+    color: #666;
+}
+
+/* Brain Training Overlay */
+#brain-instruction {
+    position: absolute;
+    top: 15%;
+    /* Upper part area */
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+#instruction-text {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}

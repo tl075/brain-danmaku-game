@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Danmaku Typing</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap');
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="error-log"></div>
+
+        <!-- UI Overlay -->
+        <div id="ui-layer">
+            <div id="hud" class="hidden">
+                <div class="hud-item">HP: <span id="hp-display">100%</span></div>
+                <div class="hud-item">Lives: <span id="lives-display">❤❤❤</span></div>
+                <div class="hud-item">Boss: <span id="boss-hp">100%</span></div>
+                <div class="hud-item">Task: <span id="current-task">DODGE</span></div>
+            </div>
+
+            <div id="start-screen">
+                <h1>BRAIN DANMAKU TYPING</h1>
+                <p>脳トレ x 弾幕 x タイピング</p>
+
+                <div class="setup-section">
+                    <label>BGMフォルダを選択 (MP3/WAV):</label>
+                    <input type="file" id="bgm-folder-input" webkitdirectory directory multiple>
+                    <p id="bgm-status" class="small-text">※BGMなしでもプレイ可能です</p>
+                </div>
+
+                <button id="start-btn">GAME START</button>
+            </div>
+
+            <div id="game-over-screen" class="hidden">
+                <h1>GAME OVER</h1>
+                <button id="retry-btn">RETRY BOSS</button>
+            </div>
+
+            <div id="victory-screen" class="hidden">
+                <h1>VICTORY</h1>
+                <p>All Bosses Defeated!</p>
+                <button onclick="location.reload()">TITLE</button>
+            </div>
+
+            <!-- Typing Input (Invisible but focused) -->
+            <input type="text" id="typing-input" autocomplete="off" spellcheck="false">
+
+            <div id="typing-display" class="hidden">
+                <div id="typing-question">問題文</div>
+                <div id="typing-romaji"><span class="typed">kore</span><span class="untyped">kara</span></div>
+            </div>
+
+            <!-- Brain Training Instruction Overlay -->
+            <div id="brain-instruction" class="hidden">
+                <div id="instruction-text">勝て！</div>
+                <div id="counting-box" class="hidden">📦</div>
+            </div>
+
+            <div id="now-playing" class="hidden">♪ <span id="song-name">Song Name</span></div>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function (msg, url, line, col, error) {
+            const log = document.getElementById('error-log');
+            if (log) {
+                log.innerText += `[ERROR] ${msg}\nAt: ${url}:${line}:${col}\n\n`;
+                if (msg.includes('Access to script') && msg.includes('CORS')) {
+                    log.innerText += "【重要】ローカルファイル(file://)で開いているため、JavaScriptがブロックされました。\n" +
+                        "VSCodeの 'Live Server' 拡張機能を使うか、ローカルサーバー経由で開いてください。\n" +
+                        "または、Firefoxを使用すると動く場合があります。\n";
+                }
+            }
+            return false;
+        };
+        window.addEventListener('unhandledrejection', function (event) {
+            const log = document.getElementById('error-log');
+            if (log) log.innerText += `[PROMISE] ${event.reason}\n\n`;
+        });
+    </script>
+    <script src="js/Typing/RomajiConverter.js"></script>
+    <script src="js/Typing/TypingLogic.js"></script>
+    <script src="js/BrainGame/BrainTaskManager.js"></script>
+    <script src="js/InputHandler.js"></script>
+    <script src="js/SoundManager.js"></script>
+    <script src="js/BulletManager.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
