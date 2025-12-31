@@ -167,6 +167,8 @@ class Game {
             return;
         }
 
+        if (this.state === 'GAMEOVER') return; // Stop update on Game Over
+
         this.frameTimer++;
 
         this.player.update(this.input);
@@ -200,7 +202,9 @@ class Game {
             }
         }
 
-        this.ui.lives.textContent = "❤".repeat(this.player.lives);
+        // v1.1.0 Fix: clamp lives to prevent RangeError (-1)
+        const displayLives = Math.max(0, this.player.lives);
+        this.ui.lives.textContent = "❤".repeat(displayLives);
     }
 
     applyEffect(effect) {
