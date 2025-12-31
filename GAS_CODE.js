@@ -12,9 +12,9 @@ function doGet(e) {
         const lives = params.lives || "0";
         const date = new Date().toISOString();
 
-        // 全て文字列として強制的に保存するために ' (アポストロフィ) をつける手もあるが、
-        // ここでは単純に追加し、読み取り側で型変換する方針にします。
-        sheet.appendRow([date, name, time, lives]);
+        // 文字列として保存 (シングルクォートを先頭につけることでExcel/Sheetの自動変換を防ぐ)
+        const safeTime = "'" + time;
+        sheet.appendRow([date, name, safeTime, lives]);
 
         return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
     }
@@ -31,8 +31,14 @@ function doGet(e) {
 
         // ソート処理の修正: Time(列2)が数値やDate型になっている可能性があるため String() で変換してから比較
         rows.sort((a, b) => {
-            const timeA = String(a[2]);
-            const timeB = String(b[2]);
+            let timeA = String(a[2]).replace(/^'/, ''); // 先頭の'を除去
+            let timeB = String(b[2]).replace(/^'/, '');
+
+            // 時間の比較 (文字列辞書順でOK: "01:00" < "02:00")
+            // 空白データが末尾に来るように
+            if (!timeA) return 1;
+            if (!timeB) return -1;
+
             return timeA.localeCompare(timeB);
         });
 
@@ -40,7 +46,7 @@ function doGet(e) {
         const top10 = rows.slice(0, 10).map(row => {
             return {
                 name: String(row[1]),
-                time: String(row[2]),
+                time: String(row[2]).replace(/^'/, ''),
                 lives: String(row[3])
             };
         });

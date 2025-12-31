@@ -1,8 +1,15 @@
 class RankingManager {
     constructor() {
         // [USER ACTION REQUIRED] Paste your Web App URL here!
-        this.gasUrl = "https://script.google.com/macros/s/AKfycbymt9oI-uV9vJ6uWb0CQAMNl5LHZghzanpDFaZTdZfF4UejgPXm8GDCL798lFfuPRz-Xg/exec";
+        // ★★★ここにあなたのGASデプロイURLを貼り付けてください！★★★
+        // 例: https://script.google.com/macros/s/xxxxxxxxxxxxxxxxx/exec
+        this.gasUrl = "https://script.google.com/macros/s/AKfycbweyZjVa6WcnXEdwbyb6u_WrnX8cvgCmSCYxSEcMh0JITb3grp5FSiJFRi8ap9411N1cA/exec";
         this.playerName = this.generateRandomName();
+
+        // Check if URL is still the placeholder
+        if (this.gasUrl.includes("AKfycbymt9oI-uV9vJ6uWb0CQAMNl5LHZghzanpDFaZTdZfF4UejgPXm8GDCL798lFfuPRz-Xg")) {
+            console.error("RankingManager: GAS URL is still the placeholder!");
+        }
     }
 
     generateRandomName() {
@@ -46,6 +53,14 @@ class RankingManager {
             }
 
             // Real online error
+            if (this.gasUrl.includes("AKfycbymt9oI")) {
+                return [
+                    { name: "SETUP", time: "NEEDED", lives: "" },
+                    { name: "Update", time: "GAS_URL", lives: "!!" },
+                    { name: "in", time: "JS File", lives: "!!" }
+                ];
+            }
+
             let msg = e.toString();
             if (msg.includes("Failed to fetch")) msg = "Network/CORS Error";
 
