@@ -23,7 +23,9 @@ class Game {
         this.bulletSpeedModifier = 1.0;
         this.freezeTimer = 0;
         this.spawnEnabled = true;
+        this.spawnEnabled = true;
         this.typingSuccessCount = 0; // v1.1 Track typing success for score
+        this.healFlashTimer = 0; // v1.1.0 Flash green logic
 
         // UI Elements
         this.ui = {
@@ -72,7 +74,11 @@ class Game {
             }
 
             // v1.1: Display Score
-            const scoreDisplay = row.score || "-";
+            // Handle undefined or "undefined" string from GAS
+            let scoreDisplay = row.score;
+            if (scoreDisplay === "undefined" || scoreDisplay === undefined || scoreDisplay === "") {
+                scoreDisplay = "-";
+            }
 
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${i + 1}</td><td>${row.name}</td><td>${scoreDisplay}</td><td>${displayTime}</td><td>${row.lives}</td>`;
@@ -179,7 +185,21 @@ class Game {
         this.checkCollisions();
 
         // Update UI
-        this.ui.hp.textContent = Math.floor(this.player.hp) + "%";
+        // Update UI
+        // this.ui.hp.textContent = Math.floor(this.player.hp) + "%"; // Removed for Bar
+        const hpPercent = Math.max(0, this.player.hp);
+        const playerHpBar = document.getElementById('player-hp-bar');
+        if (playerHpBar) {
+            playerHpBar.style.width = hpPercent + "%";
+            // Check Heal Flash state
+            if (this.healFlashTimer > 0) {
+                this.healFlashTimer--;
+                playerHpBar.style.backgroundColor = '#0f0'; // Green on heal
+            } else {
+                playerHpBar.style.backgroundColor = '#0ff'; // Default Blue
+            }
+        }
+
         this.ui.lives.textContent = "❤".repeat(this.player.lives);
     }
 
@@ -217,6 +237,7 @@ class Game {
                 break;
             case 'HEAL':
                 this.player.hp = Math.min(100, this.player.hp + 30);
+                this.healFlashTimer = 30; // Flash green for 30 frames
                 break;
             case 'BLOCK':
                 this.bullets.spawnBlock(this.player.x, this.player.y - 60);

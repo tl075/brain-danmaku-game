@@ -77,6 +77,7 @@
     - [x] Fix RPS Icon self-overlap
     - [x] Remove `show` command capability
     - [x] Add Boss HP Bar (Top Red Bar)
+    - [x] Add Player HP Bar (Bottom Blue Bar, Green on Heal) (v1.1.0)
 - [x] **Gameplay Features**
     - [x] Add `power` command (1.5x damage)
     - [x] Reduce bullet clear radius for RPS clear
