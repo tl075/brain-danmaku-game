@@ -79,7 +79,8 @@
     - [x] Add Boss HP Bar (Top Red Bar)
     - [x] Add Player HP Bar (Bottom Blue Bar, Green on Heal) (v1.1.0)
 - [x] **Gameplay Features**
-    - [x] Add `power` command (1.5x damage)
+    - [x] Add `power` command (Persistent 1.5x damage) (v1.1.2)
+    - [x] Add `weak` command (Persistent 0.75x damage) (v1.1.2)
     - [x] Reduce bullet clear radius for RPS clear
     - [x] Track Typing Success Count
 - [x] **Ranking Logic Update**

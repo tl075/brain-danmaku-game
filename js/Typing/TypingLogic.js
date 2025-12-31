@@ -14,8 +14,8 @@ class TypingLogic {
             { text: "slow", effect: "SLOW" },
             { text: "fast", effect: "FAST" },
             { text: "heal", effect: "HEAL" },
-            { text: "block", effect: "BLOCK" },
-            { text: "power", effect: "POWER" } // ADDED v1.1
+            { text: "power", effect: "POWER" }, // ADDED v1.1
+            { text: "weak", effect: "WEAK" }  // ADDED v1.1.2
         ];
 
         this.currentQuestion = null;

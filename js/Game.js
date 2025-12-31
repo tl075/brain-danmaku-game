@@ -26,6 +26,7 @@ class Game {
         this.spawnEnabled = true;
         this.typingSuccessCount = 0; // v1.1 Track typing success for score
         this.healFlashTimer = 0; // v1.1.0 Flash green logic
+        this.damageMultiplier = 1.0; // v1.1.2 Power/Weak logic
 
         // UI Elements
         this.ui = {
@@ -133,7 +134,9 @@ class Game {
 
     resetGame() {
         this.player.reset();
+        this.player.reset();
         this.bullets.clear();
+        this.damageMultiplier = 1.0;
         // TODO: Reset Boss / Stage
     }
 
@@ -247,16 +250,23 @@ class Game {
                 this.bullets.spawnBlock(this.player.x, this.player.y - 60);
                 break;
             case 'POWER':
-                // Increase damage multiplier or similar?
-                // For now, let's just do immediate damage as a burst
-                this.damageBoss(15); // Power hit
-                this.bullets.transformToRedAndClear(this.player.x, this.player.y, 200);
+                // v1.1.2: Persistent 1.5x damage
+                this.damageMultiplier = 1.5;
+                // Optional: visual cue?
+                console.log("Damage Up! x1.5");
+                break;
+            case 'WEAK':
+                // v1.1.2: Persistent 0.75x damage
+                this.damageMultiplier = 0.75;
+                console.log("Damage Down... x0.75");
                 break;
         }
     }
 
     damageBoss(amount) {
-        this.bossHpCurrent = Math.max(0, this.bossHpCurrent - amount);
+        // v1.1.2 Apply Multiplier
+        const finalDamage = amount * this.damageMultiplier;
+        this.bossHpCurrent = Math.max(0, this.bossHpCurrent - finalDamage);
         this.updateBossUi();
 
         if (this.bossHpCurrent <= 0) {
