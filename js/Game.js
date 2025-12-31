@@ -61,8 +61,18 @@ class Game {
         tbody.innerHTML = "";
 
         data.forEach((row, i) => {
+            let displayTime = row.time;
+            // Clean up Google Sheet Date string if present (e.g., "Sat Dec 30 1899 05:07:00...")
+            // We want to extract just the time part "05:07"
+            if (displayTime.length > 10 && displayTime.includes(":")) {
+                const match = displayTime.match(/(\d{2}:\d{2})/);
+                if (match) {
+                    displayTime = match[1];
+                }
+            }
+
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${i + 1}</td><td>${row.name}</td><td>${row.time}</td><td>${row.lives}</td>`;
+            tr.innerHTML = `<td>${i + 1}</td><td>${row.name}</td><td>${displayTime}</td><td>${row.lives}</td>`;
             tbody.appendChild(tr);
         });
 
