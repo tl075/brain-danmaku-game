@@ -70,8 +70,12 @@ class Game {
     }
 
     bindEvents() {
-        this.ui.startBtn.addEventListener('click', () => this.start());
-        this.ui.retryBtn.addEventListener('click', () => this.restart());
+        if (this.ui.startBtn) {
+            this.ui.startBtn.addEventListener('click', () => this.start());
+        }
+        if (this.ui.retryBtn) {
+            this.ui.retryBtn.addEventListener('click', () => this.restart());
+        }
     }
 
     start() {
