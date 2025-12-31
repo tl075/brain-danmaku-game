@@ -15,9 +15,13 @@ class BulletManager {
                 vy: 0,
                 r: 4,
                 color: '#fff',
-                type: 'normal'
+                type: 'normal',
+                dying: false,
+                dieTimer: 0
             });
         }
+
+        this.blocks = []; // Array of {x, y, w, h, timer}
     }
 
     spawnBullet(x, y, vx, vy, color = '#f00', r = 4) {
@@ -31,6 +35,7 @@ class BulletManager {
             bullet.vy = vy;
             bullet.color = color;
             bullet.r = r;
+            bullet.dying = false;
         }
     }
 
@@ -52,17 +57,89 @@ class BulletManager {
         }
     }
 
-    update(deltaTime) {
-        const timeScale = deltaTime / 16.66;
+    update(deltaTime, speedMod = 1.0) {
+        const timeScale = (deltaTime / 16.66) * speedMod;
+
+        // Update Blocks
+        for (let i = 0; i < this.blocks.length; i++) {
+            this.blocks[i].timer -= deltaTime;
+            if (this.blocks[i].timer <= 0) {
+                this.blocks.splice(i, 1);
+                i--;
+            }
+        }
+
         for (const b of this.pool) {
             if (b.active) {
+                if (b.dying) {
+                    b.dieTimer -= deltaTime;
+                    if (b.dieTimer <= 0) b.active = false;
+                    continue;
+                }
+
                 b.x += b.vx * timeScale;
                 b.y += b.vy * timeScale;
 
-                if (b.x < -50 || b.x > this.game.width + 50 ||
-                    b.y < -50 || b.y > this.game.height + 50) {
+                // Check collisions with blocks
+                if (!b.dying) {
+                    for (const blk of this.blocks) {
+                        // Simple AABB vs Point/Circle
+                        // Block is centered? Let's assume w,h is full width/height
+                        if (b.x >= blk.x - blk.w / 2 && b.x <= blk.x + blk.w / 2 &&
+                            b.y >= blk.y - blk.h / 2 && b.y <= blk.y + blk.h / 2) {
+                            b.active = false; // Destroy bullet
+                            // Spark effect?
+                            break;
+                        }
+                    }
+                }
+
+                if (b.x < -100 || b.x > this.game.width + 100 ||
+                    b.y < -100 || b.y > this.game.height + 100) {
                     b.active = false;
                 }
+            }
+        }
+    }
+
+    transformToRedAndClear(px, py, radius) {
+        const rSq = radius * radius;
+        for (const b of this.pool) {
+            if (b.active && !b.dying) {
+                const dx = b.x - px;
+                const dy = b.y - py;
+                if (dx * dx + dy * dy < rSq) {
+                    b.dying = true;
+                    b.dieTimer = 1000;
+                    b.color = '#f00';
+                    b.r += 2;
+                }
+            }
+        }
+    }
+
+    repel(px, py) {
+        for (const b of this.pool) {
+            if (b.active) {
+                // Calculate vector from player to bullet
+                let dx = b.x - px;
+                let dy = b.y - py;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist === 0) { dx = 1; dist = 1; }
+
+                // Normalize and Apply speed
+                const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy) || 2;
+                b.vx = (dx / dist) * speed * 2; // Faster away
+                b.vy = (dy / dist) * speed * 2;
+            }
+        }
+    }
+
+    accelAll(factor) {
+        for (const b of this.pool) {
+            if (b.active) {
+                b.vx *= factor;
+                b.vy *= factor;
             }
         }
     }
@@ -84,6 +161,16 @@ class BulletManager {
         }
     }
 
+    spawnBlock(x, y) {
+        this.blocks.push({
+            x: x,
+            y: y,
+            w: 100,
+            h: 40,
+            timer: 5000 // 5 seconds
+        });
+    }
+
     spawnAimed(sourceX, sourceY, targetX, targetY, speed = 4) {
         const dx = targetX - sourceX;
         const dy = targetY - sourceY;
@@ -103,7 +190,7 @@ class BulletManager {
         const pR = player.hitboxRadius;
 
         for (const b of this.pool) {
-            if (b.active) {
+            if (b.active && !b.dying) {
                 const dx = b.x - player.x;
                 const dy = b.y - player.y;
                 const distSq = dx * dx + dy * dy;
@@ -118,6 +205,16 @@ class BulletManager {
     }
 
     draw(ctx) {
+        // Draw Blocks
+        ctx.fillStyle = 'cyan';
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+
+        for (const blk of this.blocks) {
+            ctx.fillRect(blk.x - blk.w / 2, blk.y - blk.h / 2, blk.w, blk.h);
+            ctx.strokeRect(blk.x - blk.w / 2, blk.y - blk.h / 2, blk.w, blk.h);
+        }
+
         ctx.fillStyle = '#fff'; // Default
         // If we want colored bullets, we might batch them by color or just change fillStyle
         // Changing state is expensive, but for < 2000 bullets might be okay.

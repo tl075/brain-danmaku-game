@@ -29,11 +29,31 @@
                 <h1>BRAIN DANMAKU TYPING</h1>
                 <p>脳トレ x 弾幕 x タイピング</p>
 
-                <div class="setup-section">
-                    <label>BGMフォルダを選択 (MP3/WAV):</label>
-                    <input type="file" id="bgm-folder-input" webkitdirectory directory multiple>
-                    <p id="bgm-status" class="small-text">※BGMなしでもプレイ可能です</p>
+                <div id="player-setup">
+                    <label>PLAYER NAME:</label>
+                    <input type="text" id="player-name-input" placeholder="Guest" maxlength="10">
                 </div>
+
+                <div id="ranking-container">
+                    <h3>TOP RANKING</h3>
+                    <table id="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>RK</th>
+                                <th>NAME</th>
+                                <th>TIME</th>
+                                <th>❤️</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body">
+                            <tr>
+                                <td colspan="4">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
 
                 <button id="start-btn">GAME START</button>
             </div>
@@ -46,6 +66,8 @@
             <div id="victory-screen" class="hidden">
                 <h1>VICTORY</h1>
                 <p>All Bosses Defeated!</p>
+                <p id="final-score">Time: --:-- | Lives: --</p>
+                <p id="ranking-status">Sending Score...</p>
                 <button onclick="location.reload()">TITLE</button>
             </div>
 
@@ -62,6 +84,8 @@
                 <div id="instruction-text">勝て！</div>
                 <div id="counting-box" class="hidden">📦</div>
             </div>
+
+            <div id="hide-box" class="hidden">BLOCKED</div>
 
             <div id="now-playing" class="hidden">♪ <span id="song-name">Song Name</span></div>
         </div>
@@ -88,6 +112,7 @@
     <script src="js/Typing/RomajiConverter.js"></script>
     <script src="js/Typing/TypingLogic.js"></script>
     <script src="js/BrainGame/BrainTaskManager.js"></script>
+    <script src="js/RankingManager.js"></script>
     <script src="js/InputHandler.js"></script>
     <script src="js/SoundManager.js"></script>
     <script src="js/BulletManager.js"></script>

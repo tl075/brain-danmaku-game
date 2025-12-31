@@ -7,6 +7,7 @@ class BrainTaskManager {
 
         this.targets = []; // Array of objects {x, y, r, type, label}
         this.timer = 0;
+        this.timeLimit = 0; // ms
         this.state = 'IDLE'; // IDLE, ACTIVE, RESOLVING
     }
 
@@ -14,6 +15,9 @@ class BrainTaskManager {
         this.currentMode = mode;
         this.targets = [];
         this.state = 'ACTIVE';
+        // 15 seconds timeout
+        this.timeLimit = 15000;
+
         document.getElementById('brain-instruction').classList.remove('hidden');
 
         if (mode === 'RPS') this.setupRPS();
@@ -115,8 +119,18 @@ class BrainTaskManager {
         });
     }
 
-    update() {
+    update(deltaTime) {
         if (this.state !== 'ACTIVE') return;
+
+        // Timer Logic
+        // Game sends deltaTime in loop? Check Game.js
+        if (deltaTime) this.timeLimit -= deltaTime;
+        else this.timeLimit -= 16; // Fallback
+
+        if (this.timeLimit <= 0) {
+            this.failTask("TIME UP!");
+            return;
+        }
 
         // Check collision with targets
         const p = this.game.player;
@@ -191,12 +205,21 @@ class BrainTaskManager {
             this.game.bullets.clearArea(this.game.player.x, this.game.player.y, 200); // 200px radius bomb
 
             // Reset / Next
+            this.state = 'RESOLVING'; // Prevent multi-trigger
             setTimeout(() => this.startTask(this.currentMode), 1000);
         } else {
-            this.game.sound.playSE('wrong');
-            this.game.player.takeDamage(10);
-            this.instructionDiv.innerText = "MISS!";
+            this.failTask("MISS!");
         }
+    }
+
+    failTask(msg) {
+        this.game.sound.playSE('wrong');
+        this.game.player.takeDamage(10);
+        this.instructionDiv.innerText = msg;
+
+        // Chain next task even on fail
+        this.state = 'RESOLVING';
+        setTimeout(() => this.startTask(this.currentMode), 1000);
     }
 
     draw(ctx) {

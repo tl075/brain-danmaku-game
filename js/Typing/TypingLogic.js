@@ -3,81 +3,115 @@ class TypingLogic {
         this.game = game;
         this.active = false;
 
-        // Questions: { text: "Display Text", romaji: "targetromaji" }
-        this.questions = [
-            { text: "こんにちは", romaji: "konnichiwa" },
-            { text: "さようなら", romaji: "sayounara" },
-            { text: "ありがとう", romaji: "arigatou" },
-            { text: "じかんげんしゅ", romaji: "jikangenshu" },
-            { text: "いっせきにちょう", romaji: "issekinichou" },
-            { text: "ききかいかい", romaji: "kikikaikai" },
-            { text: "しんらばんしょう", romaji: "shinrabanshou" },
-            { text: "やきにく", romaji: "yakiniku" }
+        // Command Dictionary
+        this.commands = [
+            { text: "freeze", effect: "FREEZE" },
+            { text: "fire", effect: "FIRE" },
+            { text: "wind", effect: "WIND" },
+            { text: "bomb", effect: "BOMB" },
+            { text: "hide", effect: "HIDE" },
+            { text: "show", effect: "SHOW" },
+            { text: "slow", effect: "SLOW" },
+            { text: "fast", effect: "FAST" },
+            { text: "heal", effect: "HEAL" },
+            { text: "block", effect: "BLOCK" }
         ];
 
         this.currentQuestion = null;
-        this.typedRomaji = "";
-        this.remainingRomaji = "";
+        this.typedText = "";
+        this.remainingText = "";
+        this.timer = 0;
+        this.maxTime = 10000; // 10 seconds in ms
 
         // Bind invisible input
         this.inputElement = document.getElementById('typing-input');
 
-        // Global key listener (better than input element for games)
         window.addEventListener('keydown', (e) => {
             if (!this.active || !this.currentQuestion) return;
 
-            // Prevent default behavior for game keys if needed, but for typing allow letters
+            // Allow only single alphanumeric keys
             if (e.key.length === 1 && !e.ctrlKey && !e.altKey) {
-                this.processKey(e.key);
-            } else if (e.key === 'Backspace') {
-                // Determine if we want to allow backspace? usually no in typing games, you just fail or wait
+                this.processKey(e.key.toLowerCase());
             }
         });
     }
 
     startQuestion() {
         this.active = true;
-        const q = this.questions[Math.floor(Math.random() * this.questions.length)];
-        this.currentQuestion = q;
-        this.typedRomaji = "";
-        this.remainingRomaji = q.romaji;
+
+        // Pick random command
+        const cmd = this.commands[Math.floor(Math.random() * this.commands.length)];
+        this.currentQuestion = cmd;
+        this.typedText = "";
+        this.remainingText = cmd.text;
+
+        this.timer = this.maxTime; // Reset timer
 
         this.updateUI();
         document.getElementById('typing-display').classList.remove('hidden');
-        this.inputElement.focus();
+        this.updateTimerUI();
+    }
+
+    update(deltaTime) {
+        if (!this.active || !this.currentQuestion) return;
+
+        this.timer -= deltaTime;
+        if (this.timer <= 0) {
+            this.failQuestion();
+        }
+
+        this.updateTimerUI();
+    }
+
+    updateTimerUI() {
+        const seconds = Math.ceil(this.timer / 1000);
+        const el = document.getElementById('typing-question');
+        el.innerText = `TYPE: ${seconds}s`;
+        if (seconds <= 3) el.style.color = 'red';
+        else el.style.color = 'white';
     }
 
     processKey(key) {
-        // Check if key matches next expected char
-        const nextChar = this.remainingRomaji.charAt(0);
+        // Simple match
+        const nextChar = this.remainingText.charAt(0);
 
-        if (key.toLowerCase() === nextChar) {
-            // Correct
-            this.typedRomaji += nextChar;
-            this.remainingRomaji = this.remainingRomaji.substring(1);
-            this.game.sound.playSE('type');
+        if (key === nextChar) {
+            this.typedText += nextChar;
+            this.remainingText = this.remainingText.substring(1);
+            this.game.sound.playSE('type'); // We need to add this SE?
 
-            if (this.remainingRomaji.length === 0) {
+            if (this.remainingText.length === 0) {
                 this.completeQuestion();
             }
         } else {
-            // Mistake
-            this.game.player.takeDamage(5);
+            // Wrong key
             this.game.sound.playSE('miss');
+            // Slight Penalty?
         }
         this.updateUI();
     }
 
     completeQuestion() {
         this.game.sound.playSE('correct');
-        this.game.damageBoss(10);
-        this.startQuestion(); // Chains for now
+
+        // Trigger Effect
+        this.game.applyEffect(this.currentQuestion.effect);
+
+        // Delay next question slightly
+        this.active = false;
+        setTimeout(() => this.startQuestion(), 1000);
+    }
+
+    failQuestion() {
+        this.game.sound.playSE('wrong');
+        this.game.player.takeDamage(3); // Penalty 3%
+        this.active = false;
+        // Immediate restart or delay?
+        setTimeout(() => this.startQuestion(), 1000);
     }
 
     updateUI() {
-        document.getElementById('typing-question').innerText = this.currentQuestion.text;
-
-        const html = `<span class="typed">${this.typedRomaji}</span><span class="untyped">${this.remainingRomaji}</span>`;
+        const html = `<span class="typed">${this.typedText}</span><span class="untyped">${this.remainingText}</span>`;
         document.getElementById('typing-romaji').innerHTML = html;
     }
 }

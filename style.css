@@ -110,6 +110,48 @@ button {
     margin-top: 20px;
 }
 
+#player-setup {
+    margin: 20px 0;
+}
+
+#player-name-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent-color);
+    color: #fff;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+    text-align: center;
+    width: 200px;
+}
+
+#ranking-container {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #444;
+    padding: 10px;
+    margin-top: 10px;
+    width: 80%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#ranking-table th {
+    border-bottom: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 5px;
+}
+
+#ranking-table td {
+    padding: 5px;
+    border-bottom: 1px solid #333;
+}
+
 button:hover {
     background: var(--accent-color);
     color: #000;
@@ -173,6 +215,8 @@ button:hover {
     padding: 10px 20px;
     border-radius: 4px;
     border: 1px solid var(--accent-color);
+    z-index: 1000;
+    /* Absolute Top layer */
 }
 
 #typing-question {
@@ -196,6 +240,52 @@ button:hover {
     color: #666;
 }
 
+#hide-box {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    width: 20%;
+    height: 15%;
+    background: repeating-linear-gradient(45deg,
+            #000,
+            #000 10px,
+            #111 10px,
+            #111 20px);
+    border: 2px solid #0ff;
+    box-shadow: 0 0 10px #0ff;
+    z-index: 5;
+    /* Lower than text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #444;
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: floatAround 5s infinite ease-in-out alternate;
+}
+
+@keyframes floatAround {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(50px, -50px);
+    }
+
+    50% {
+        transform: translate(-50px, 20px);
+    }
+
+    75% {
+        transform: translate(30px, 50px);
+    }
+
+    100% {
+        transform: translate(-20px, -30px);
+    }
+}
+
 /* Brain Training Overlay */
 #brain-instruction {
     position: absolute;
@@ -204,6 +294,8 @@ button:hover {
     width: 100%;
     text-align: center;
     pointer-events: none;
+    z-index: 50;
+    /* Higher than hide box */
 }
 
 #instruction-text {
