@@ -155,6 +155,64 @@ button {
     font-family: var(--font-heading);
 }
 
+/* Social Media Container */
+#social-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#my-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transition: transform 0.2s;
+}
+
+#my-icon:hover {
+    transform: scale(1.1);
+}
+
+#social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-btn {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background 0.2s, color 0.2s;
+    border: 1px solid #555;
+}
+
+.social-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+.x-btn {
+    font-weight: bold;
+}
+
+.twitch-btn {
+    background: rgba(100, 65, 165, 0.6);
+}
+
+.twitch-btn:hover {
+    background: #6441a5;
+    color: #fff;
+}
+
 #player-setup {
     margin: 20px 0;
 }

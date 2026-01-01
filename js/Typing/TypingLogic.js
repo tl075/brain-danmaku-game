@@ -86,7 +86,7 @@ class TypingLogic {
             }
         } else {
             // Wrong key
-            this.game.sound.playSE('miss');
+            this.game.sound.playSE('wrong');
             // Slight Penalty?
         }
         this.updateUI();

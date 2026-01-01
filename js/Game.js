@@ -101,6 +101,7 @@ class Game {
         const muteBtn = document.getElementById('mute-btn');
         if (muteBtn) {
             muteBtn.addEventListener('click', () => {
+                this.sound.playSE('ui-click');
                 this.sound.toggleMute();
                 muteBtn.style.opacity = this.sound.muted ? "0.3" : "1";
                 muteBtn.innerText = this.sound.muted ? "🔇" : "🔊";
@@ -121,6 +122,7 @@ class Game {
         // Start Audio
         // Start Audio
         this.sound.playRandomBgm();
+        this.sound.playSE('ui-click');
 
         this.bossHpCurrent = 100;
         this.updateBossUi();
@@ -305,6 +307,7 @@ class Game {
             this.player.takeDamage(10); // Arbitrary damage
             hitBullet.active = false; // Destroy bullet
             // Sound effect
+            this.sound.playSE('damage');
         }
     }
 

@@ -72,12 +72,14 @@
 ## User Requested Enhancements (v1.1)
 - [x] **Audio**
     - [x] Add BGM Mute Button (with Icon/Text toggle)
+    - [x] Add Sound Effects (Damage, Attack, UI Click) (v1.1.3)
 - [x] **UI Improvements**
     - [x] Fix RPS Icon / Typing Box overlap
     - [x] Fix RPS Icon self-overlap
     - [x] Remove `show` command capability
     - [x] Add Boss HP Bar (Top Red Bar)
     - [x] Add Player HP Bar (Bottom Blue Bar, Green on Heal) (v1.1.0)
+    - [x] Add Social Media Links & Icon (Bottom Right) (v1.1.3)
 - [x] **Gameplay Features**
     - [x] Add `power` command (Persistent 1.5x damage) (v1.1.2)
     - [x] Add `weak` command (Persistent 0.75x damage) (v1.1.2)
